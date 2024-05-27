@@ -181,3 +181,41 @@ and since I didn't have much knowledge on networking. This didn't satisfy my OCD
 Hereby I present you the second configuration:
 
 # Second configuration: OpenWRT + Passwall
+
+## The issue with the previous configuration
+Something that itched my mind the whole time was the problem of routing the traffic.
+I wanted to not route the traffic that is domestic to the proxy. My knowledge in routing
+via iptables manually was not enough and I had no clue what steps to take.
+
+Another thing that I had in my mind for a long time was to use an [OpenWRT](https://openwrt.org/) machine
+for my home network but my current router did not support it and I had to purchase
+a new router for it.
+
+I knew [OpenWRT](https://openwrt.org/) had an x86 version which you could run on x86 machines but since
+I was completely a beginner to [OpenWRT](https://openwrt.org/), I couldn't really risk it to run it on
+bare metal. So I decided to run it on a VM and what's better than QEMU for this
+matter? 
+
+## Setting up the QEMU VM
+
+QEMU is a free and open-source machine emulator and we can use it to run a VM that runs OpenWRT.
+The benefit to this approach is that we can:
+
+1. Access our host even when we have screwed up our OpenWRT install.
+2. Dedicate limited amounts of resources.
+
+Another approach might be using other approaches to virtualization like [proxmax](https://www.proxmox.com/en/)
+
+First, I decided to manage my virtual machine using [libvirtd](https://libvirt.org/manpages/libvirtd.html) which is
+a convenient open-source daemon to manage different virtual machines.
+
+The QEMU + libvirtd installation procedure should be pretty easy, install the packages
+for both QEMU and libvirtd and start the corresponding services.
+
+After this, we can use a fronted for libvirtd called [virt-manager](https://virt-manager.org/). The procedure
+now should be pretty easy. We just have to grab the image file from [here](https://firmware-selector.openwrt.org/?version=23.05.3&target=x86%2F64&id=generic)
+and go through the wizard in virt-manager and set up our virtual machine.
+
+Before anything, we should make sure that we have set up a bridge so that our VM can talk
+with other devices in our network. More info on it
+
