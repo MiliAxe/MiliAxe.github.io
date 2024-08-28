@@ -32,6 +32,8 @@ always wanted to make the whole process of connecting family members to the free
 
 So, here I started my journey of looking for a solution.
 
+{{< figure align=center src="images/setup.jpg" caption="My lovely old Debian server chilling in the ceiling" >}}
+
 ---
 
 ## First configuration: clumsy redsocks + iptables setup
@@ -131,31 +133,31 @@ Now that we have the redsocks configuration, we need to set up the iptables
 rules so that the traffic that comes to the machine is redirected to the
 redsocks.
 
-```sh 
-iptables -I INPUT -j ACCEPT 
-iptables -A FORWARD -i wls32 -j ACCEPT 
+```sh
+iptables -I INPUT -j ACCEPT
+iptables -A FORWARD -i wls32 -j ACCEPT
 
-iptables -t nat -A OUTPUT -d 192.168.0.0/16 -j RETURN 
-iptables -t nat -A OUTPUT -d 0.0.0.0/8 -j RETURN 
+iptables -t nat -A OUTPUT -d 192.168.0.0/16 -j RETURN
+iptables -t nat -A OUTPUT -d 0.0.0.0/8 -j RETURN
 
-#iptables -t nat -A PREROUTING -p tcp --dport 22 -j ACCEPT 
-#iptables -t nat -A OUTPUT -p tcp --dport 22 -j ACCEPT 
+#iptables -t nat -A PREROUTING -p tcp --dport 22 -j ACCEPT
+#iptables -t nat -A OUTPUT -p tcp --dport 22 -j ACCEPT
 
-#iptables -t nat -A PREROUTING -p tcp ! --dport 22 -j REDIRECT --to-ports 12345 
-#iptables -t nat -A OUTPUT -p tcp ! --dport 22 -j REDIRECT --to-ports 12345 
-#iptables -t nat -A PREROUTING -p udp ! --dport 22 -j REDIRECT --to-ports 10053 
-#iptables -t nat -A OUTPUT -p udp ! --dport 22 -j REDIRECT --to-ports 10053 
+#iptables -t nat -A PREROUTING -p tcp ! --dport 22 -j REDIRECT --to-ports 12345
+#iptables -t nat -A OUTPUT -p tcp ! --dport 22 -j REDIRECT --to-ports 12345
+#iptables -t nat -A PREROUTING -p udp ! --dport 22 -j REDIRECT --to-ports 10053
+#iptables -t nat -A OUTPUT -p udp ! --dport 22 -j REDIRECT --to-ports 10053
 
-iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 12345 
-iptables -t nat -A OUTPUT -p tcp --dport 443 -j REDIRECT --to-ports 12345 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 12345 
-iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 12345 
-iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 6450 
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6450 
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 12345
+iptables -t nat -A OUTPUT -p tcp --dport 443 -j REDIRECT --to-ports 12345
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 12345
+iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 12345
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 6450
+iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6450
 
-#iptables -t nat -A PREROUTING -p tcp -j REDIRECT --to-ports 12345 
-#iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-ports 12345 
-iptables -t nat -A POSTROUTING -p tcp -o wls32 -j MASQUERADE 
+#iptables -t nat -A PREROUTING -p tcp -j REDIRECT --to-ports 12345
+#iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-ports 12345
+iptables -t nat -A POSTROUTING -p tcp -o wls32 -j MASQUERADE
 ```
 
 This will basically redirect any TCP connection that goes to the port
@@ -167,7 +169,7 @@ configuration.
 One of the main issues with this setup was that for some reason devices connected
 to this machine as a gateway were not able to do DNS queries. I just randomly
 tried out routing the DNS queries (port `53`) from the devices to the port `6450` which is
-the DNS server that `Hiddify-next` runs. Which 
+the DNS server that `Hiddify-next` runs. Which
 
 Also, for some reason I had to **specify** the exact port I wanted to redirect and
 it wouldn't work if I just redirected all the traffic to the port `12345`.
@@ -180,8 +182,8 @@ be done by setting the gateway IP to the IP of the machine. You can either speci
 the DHCP server to give the IP of the machine as the gateway or you can manually
 set the gateway IP on the devices.
 
-Now, this setup was working, but it was not the most elegant solution. Sometimes 
-this setup would just stop working and I had to restart the machine to make it work 
+Now, this setup was working, but it was not the most elegant solution. Sometimes
+this setup would just stop working and I had to restart the machine to make it work
 and since I didn't have much knowledge on networking. This didn't satisfy my OCD.
 
 Hereby I present you the second configuration:
@@ -191,6 +193,7 @@ Hereby I present you the second configuration:
 ## Second configuration: OpenWRT + Passwall
 
 ### The issue with the previous configuration
+
 Something that itched my mind the whole time was the problem of routing the traffic.
 I wanted to not route the traffic that is domestic to the proxy. My knowledge in routing
 via iptables manually was not enough and I had no clue what steps to take.
@@ -202,7 +205,7 @@ a new router for it.
 I knew [OpenWRT](https://openwrt.org/) had an x86 version which you could run on x86 machines but since
 I was completely a beginner to [OpenWRT](https://openwrt.org/), I couldn't really risk it to run it on
 bare metal. So I decided to run it on a VM and what's better than QEMU for this
-matter? 
+matter?
 
 ### Setting up the QEMU VM
 
@@ -226,5 +229,3 @@ and go through the wizard in virt-manager and set up our virtual machine.
 
 Before anything, we should make sure that we have set up a bridge so that our VM can talk
 with other devices in our network. More info on it
-
-
