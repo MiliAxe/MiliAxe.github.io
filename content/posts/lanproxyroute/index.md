@@ -228,4 +228,78 @@ now should be pretty easy. We just have to grab the image file from [here](https
 and go through the wizard in virt-manager and set up our virtual machine.
 
 Before anything, we should make sure that we have set up a bridge so that our VM can talk
-with other devices in our network. More info on it
+with other devices in our network. One thing I have noticed is that the QEMU host should be
+connected via LAN to our router to bridge the connection to the guest. I didn't have
+much luck setting it up with WLAN connection.
+
+(This section needs to be completed)
+
+## Setting up Passwall
+
+I followed a guide like [this](https://en.faridsguide.com/installing-passwall-and-xray-core-on-openwrt-and-xiaomi-mi-router-4a-gigabit-edition-router/)
+to set up Passwall on my OpenWRT machine. Passwall is a great project that simplifies the whole
+process of routing the whole network through a proxy. It supports multiple projects like sing-box or Xray
+that help hiding your proxy traffic from DPI.
+
+{{< figure align=center src="images/passwallmainpage.png" caption="Passwall's main page" >}}
+
+First off, it is a good idea to download the specified executables or update them if they already exist.
+This can be done through the **App Update** where we can download/update the related executables.
+
+To add a new profile, we can go to the **Node list** tab where we can add profiles via link or manually.
+In case we want to use different profiles for different domains or IPs, we have to first add their profiles separately.
+More on this later.
+
+After adding the profiles, we can simply enable the **Main switch**. And our internet should be tunneled through the
+specified proxy. After enabling the switch, The TCP and UDP cards in the main page should turn to a **green text saying**
+_running_. I also usually use the **connection** cards to see whether the proxy is working properly.
+
+{{< figure align=center src="images/pingcards.jpg" caption="The tunnel working properly" >}}
+
+### Using rules to route traffic
+
+One of the good features that this method easily provides is routing traffic based on traffic's domain/IP.
+This is mainly done by using a so-called _shunt_. We can specify different profiles and redirect specific
+traffic to its corresponding profiles. To make a shunt, we just have to create on in the **Node list**
+section. Here, by using the **add** button we can create a profile of type **shunt** (xray and sing-box shunts are supported as of now).
+
+{{< figure align=center src="images/shunt.jpg" caption="A shunt profile" >}}
+Here, I have created a sing-box shunt profile where the traffic that matches my DirectGame ruleset don't go through
+the proxy. Games that I want to go through proxy AKA ProxyGame go through a specific proxy, and other traffic goes
+its specific profile. For example, ChatGPT tends to open up on a slower profile but not on another. Here, we can specify
+that the traffic going to OpenAI to be sent to that specific profile. And at the end, if no matching ruleset was found
+for the traffic, the traffic goes to the proxy with the lowest latency.
+
+### Specifying rules
+
+In the **Rule Manage** section, we can set which traffic the rule should accept. For example, in the OpenAI rule,
+I have set the following:
+
+{{< figure align=center src="images/openairule.jpg" caption="Don't mind spotify here, I was too lazy to create a new rule" >}}
+
+Here, I have specified that this rule accepts the traffic that goes through **_geosite:openai & geosite:spotify_**.
+geosite is basically a file that has categories for different types of domains. Some kind man has spent time for us
+to easily specify a group of domains by using a single file. Here, I have used the file's OpenAI and Spotify category.
+By Specifying this, I don't have to search for every single domain of Spotify, the kind man has done it for me before
+in the file.
+
+These files are located under `/usr/share/singbox` for the sing-box profiles.
+
+We can even download other files like this. For example, I have used the great [Iran Hosted Domains](https://github.com/bootmortis/iran-hosted-domains) project to bypass the proxy on domestic traffic. This
+greatly helps ping, and it reduces the chances of your proxy getting detected.
+the procedure should be as simple ass downloading the latest `iran.dat` file from the releases section
+and putting it inside `/usr/share/singbox`. And finally, we can use it in any rule by setting
+`ext:iran.dat:all` in the domains section.
+
+## Extra stuff
+
+### DNS Stuff
+
+It is always a good idea to play around with the panel to see which options enhances your connection.
+I personally have found it fun to play around with the DNS settings in `Basic Settings > DNS`. You might
+want to try different settings there (i.e. UDP, TCP and so on).
+
+### Handy Clear NFTSET button
+
+You might also find it useful at times to use the **Clear NFTSET Button** under the DNS section.
+Sometimes it might fix some weird bugs and hiccups.
