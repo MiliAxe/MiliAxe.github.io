@@ -32,7 +32,9 @@ always wanted to make the whole process of connecting family members to the free
 
 So, here I started my journey of looking for a solution.
 
-{{< figure align=center src="images/setup.jpg" caption="My lovely old Debian server chilling in the ceiling" >}}
+<!-- {{< figure align=center src="images/setup.jpg" caption="My lovely old Debian server chilling in the ceiling" >}} -->
+
+![Roof setup](@assets/images/lanproxyroute/setup.jpg)
 
 ---
 
@@ -241,7 +243,9 @@ to set up Passwall on my OpenWRT machine. Passwall is a great project that simpl
 process of routing the whole network through a proxy. It supports multiple projects like sing-box or Xray
 that help hiding your proxy traffic from DPI.
 
-{{< figure align=center src="images/passwallmainpage.png" caption="Passwall's main page" >}}
+<!-- {{< figure align=center src="images/passwallmainpage.png" caption="Passwall's main page" >}} -->
+
+![Passwall main page](@assets/images/lanproxyroute/passwallmainpage.png)
 
 First off, it is a good idea to download the specified executables or update them if they already exist.
 This can be done through the **App Update** where we can download/update the related executables.
@@ -254,7 +258,8 @@ After adding the profiles, we can simply enable the **Main switch**. And our int
 specified proxy. After enabling the switch, The TCP and UDP cards in the main page should turn to a **green text saying**
 _running_. I also usually use the **connection** cards to see whether the proxy is working properly.
 
-{{< figure align=center src="images/pingcards.jpg" caption="The tunnel working properly" >}}
+<!-- {{< figure align=center src="images/pingcards.jpg" caption="The tunnel working properly" >}} -->
+
 ![Ping cards](@assets/images/lanproxyroute/pingcards.jpg)
 
 ### Using rules to route traffic
@@ -264,7 +269,7 @@ This is mainly done by using a so-called _shunt_. We can specify different profi
 traffic to its corresponding profiles. To make a shunt, we just have to create on in the **Node list**
 section. Here, by using the **add** button we can create a profile of type **shunt** (xray and sing-box shunts are supported as of now).
 
-{{< figure align=center src="images/shunt.jpg" caption="A shunt profile" >}}
+![Shunt profile](@assets/images/lanproxyroute/shunt.jpg)
 Here, I have created a sing-box shunt profile where the traffic that matches my DirectGame ruleset don't go through
 the proxy. Games that I want to go through proxy AKA ProxyGame go through a specific proxy, and other traffic goes
 its specific profile. For example, ChatGPT tends to open up on a slower profile but not on another. Here, we can specify
@@ -276,7 +281,9 @@ for the traffic, the traffic goes to the proxy with the lowest latency.
 In the **Rule Manage** section, we can set which traffic the rule should accept. For example, in the OpenAI rule,
 I have set the following:
 
-{{< figure align=center src="images/openairule.jpg" caption="Don't mind spotify here, I was too lazy to create a new rule" >}}
+<!-- {{< figure align=center src="images/openairule.jpg" caption="Don't mind spotify here, I was too lazy to create a new rule" >}} -->
+
+![OpenAI rule](@assets/images/lanproxyroute/openairule.jpg)
 
 Here, I have specified that this rule accepts the traffic that goes through **_geosite:openai & geosite:spotify_**.
 geosite is basically a file that has categories for different types of domains. Some kind man has spent time for us
