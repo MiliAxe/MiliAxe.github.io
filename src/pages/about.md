@@ -6,7 +6,7 @@ date: "2024-05-15T00:10:00+0330"
 
 ## whoami?
 
-I'm _Mili_, a sophomore Computer Engineering student.
+I'm _Mili_, a junior Computer Engineering student.
 
 I'm interested in creating things
 that make life easier. Furthermore, I'm a fan of free software (free as in freedom) and I'm trying to reach
